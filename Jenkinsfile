@@ -35,13 +35,12 @@ pipeline {
         }
 
         stage('Deploy to EKS') {
-            steps {
-                sh '''
-                kubectl apply -f deployment.yaml
-                kubectl apply -f service.yaml
-                kubectl rollout restart deployment flask-app
-                '''
-            }
-        }
+           steps {
+        sh '''
+        aws eks update-kubeconfig --region ap-south-1 --name flask-cicd-cluster
+        kubectl apply -f deployment.yaml
+        kubectl apply -f service.yaml
+        kubectl rollout status deployment/flask-app
+        '''
     }
 }
